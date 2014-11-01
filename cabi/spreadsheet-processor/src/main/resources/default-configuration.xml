@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<processor-configuration>
+    <cell-processors>
+        <cell-processor name="extractor" class=""/>
+    </cell-processors>
+    <range-processors>
+        <range-processor name="block" class=""/>
+    </range-processors>
+    <templates>
+        <template name="trial-definition">
+            <sheets>
+                <sheet name="Trial" required="true" implementationClass="">
+                    <cells>
+                        <cell processorReference="extractor" location="B2">
+                            <args>
+                                <arg name="variable" value="country"/>
+                            </args>
+                        </cell>
+                    </cells>
+                    <ranges>
+                        <range start="I2" width="4" processorReference="block">
+                            <args>
+                                <arg name="table" value="table"/>
+                            </args>
+                            <column-bindings>
+                                <column-binding column="1" processorReference="extractor">
+                                    <args>
+                                        <arg name="variable" value="country"/>
+                                    </args>
+                                </column-binding>
+                            </column-bindings>
+                        </range>
+                    </ranges>
+                </sheet>
+            </sheets>
+        </template>
+    </templates>
+</processor-configuration>

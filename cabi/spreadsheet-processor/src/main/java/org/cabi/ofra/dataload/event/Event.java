@@ -17,15 +17,15 @@ public class Event {
   private UUID id;
   private Date timestamp;
 
-  public Event(String message) {
+  Event(String message) {
     this(message, EVENT_TYPE.INFORMATION, null);
   }
 
-  public Event(String message, EVENT_TYPE type) {
+  Event(String message, EVENT_TYPE type) {
     this(message, type, null);
   }
 
-  public Event(String message, EVENT_TYPE type, Exception exception) {
+  Event(String message, EVENT_TYPE type, Exception exception) {
     this.message = message;
     this.type = type;
     this.exception = exception;
