@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <processor-configuration>
     <cell-processors>
-        <cell-processor name="extractor" class=""/>
+        <cell-processor name="valset" class="org.cabi.ofra.dataload.impl.ValidateAndSet"/>
     </cell-processors>
     <range-processors>
         <range-processor name="block" class=""/>
@@ -11,26 +11,26 @@
             <sheets>
                 <sheet name="Trial" required="true" implementationClass="">
                     <cells>
-                        <cell processorReference="extractor" location="B2">
+                        <cell processorReference="valset" location="B2">
                             <args>
-                                <arg name="variable" value="country"/>
+                                <arg name="variableName" value="countryCode"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B3">
+                            <args>
+                                <arg name="regionName" value="countryCode"/>
                             </args>
                         </cell>
                     </cells>
+<!--
                     <ranges>
                         <range start="I2" width="4" processorReference="block">
                             <args>
                                 <arg name="table" value="table"/>
                             </args>
-                            <column-bindings>
-                                <column-binding column="1" processorReference="extractor">
-                                    <args>
-                                        <arg name="variable" value="country"/>
-                                    </args>
-                                </column-binding>
-                            </column-bindings>
                         </range>
                     </ranges>
+-->
                 </sheet>
             </sheets>
         </template>
