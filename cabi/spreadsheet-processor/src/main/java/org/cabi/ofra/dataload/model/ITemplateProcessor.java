@@ -12,5 +12,5 @@ import java.util.List;
  * (c) 2014, Eduardo Quirós-Campos
  */
 public interface ITemplateProcessor {
-  public IProcessingContext processTemplate(Workbook workbook, TemplateConfiguration configuration, IEventCollector eventCollector) throws ProcessorException;
+  public IProcessingContext processTemplate(Workbook workbook, TemplateConfiguration configuration, IEventCollector eventCollector, String databasePropertiesFile, String user) throws ProcessorException;
 }

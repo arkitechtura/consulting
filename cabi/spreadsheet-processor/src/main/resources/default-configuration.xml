@@ -4,13 +4,18 @@
         <cell-processor name="valset" class="org.cabi.ofra.dataload.impl.ValidateAndSet"/>
     </cell-processors>
     <range-processors>
-        <range-processor name="block" class=""/>
+        <range-processor name="trial-blocks-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlockRangeProcessor"/>
     </range-processors>
     <templates>
         <template name="trial-definition">
             <sheets>
-                <sheet name="Trial" required="true" implementationClass="">
+                <sheet name="Trial" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$TrialSheetProcessor">
                     <cells>
+                        <cell processorReference="valset" location="B23">
+                            <args>
+                                <arg name="variableName" value="trialUniqueId"/>
+                            </args>
+                        </cell>
                         <cell processorReference="valset" location="B2">
                             <args>
                                 <arg name="variableName" value="countryCode"/>
@@ -18,19 +23,102 @@
                         </cell>
                         <cell processorReference="valset" location="B3">
                             <args>
-                                <arg name="regionName" value="countryCode"/>
+                                <arg name="variableName" value="regionName"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B4">
+                            <args>
+                                <arg name="variableName" value="regionCode"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B5">
+                            <args>
+                                <arg name="variableName" value="districtName"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B6">
+                            <args>
+                                <arg name="variableName" value="districtCode"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B7">
+                            <args>
+                                <arg name="variableName" value="villageName"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B8">
+                            <args>
+                                <arg name="variableName" value="villageCode"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B9">
+                            <args>
+                                <arg name="variableName" value="cropOne"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B10">
+                            <args>
+                                <arg name="variableName" value="cropTwo"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B12">
+                            <args>
+                                <arg name="variableName" value="year"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B13">
+                            <args>
+                                <arg name="variableName" value="season"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B15">
+                            <args>
+                                <arg name="variableName" value="farmerOrCentre"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B16">
+                            <args>
+                                <arg name="variableName" value="leadResearcher"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B17">
+                            <args>
+                                <arg name="variableName" value="fieldAssistantName"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B18">
+                            <args>
+                                <arg name="variableName" value="fieldAssistantTelephone"/>
+                                <arg name="toString" value="true"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B19">
+                            <args>
+                                <arg name="variableName" value="latitude"/>
+                            </args>
+                        </cell>
+                        <cell processorReference="valset" location="B20">
+                            <args>
+                                <arg name="variableName" value="longitude"/>
                             </args>
                         </cell>
                     </cells>
-<!--
+                </sheet>
+                <sheet name="Blocks" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlocksSheetProcessor">
+                    <cells>
+                        <cell processorReference="valset" location="B1">
+                            <args>
+                                <arg name="variableName" value="blockTrialUID"/>
+                            </args>
+                        </cell>
+                    </cells>
                     <ranges>
-                        <range start="I2" width="4" processorReference="block">
+                        <range start="A3" width="12" processorReference="trial-blocks-processor">
                             <args>
                                 <arg name="table" value="table"/>
                             </args>
                         </range>
                     </ranges>
--->
                 </sheet>
             </sheets>
         </template>

@@ -7,10 +7,6 @@ import org.cabi.ofra.dataload.event.IEventCollector;
 /**
  * (c) 2014, Eduardo Quirós-Campos
  */
-public interface ICellProcessor {
-  public void setName(String name);
-  public String getName();
-  public void setArgument(String name, Object value);
-  public void reset();
+public interface ICellProcessor extends IProcessor {
   public void processCell(IProcessingContext context, Cell cell, IEventCollector eventCollector) throws ProcessorException;
 }

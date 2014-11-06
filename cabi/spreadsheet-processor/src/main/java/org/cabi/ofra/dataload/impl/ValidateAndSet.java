@@ -5,16 +5,20 @@ import org.cabi.ofra.dataload.ProcessorException;
 import org.cabi.ofra.dataload.event.Event;
 import org.cabi.ofra.dataload.event.EventBuilder;
 import org.cabi.ofra.dataload.event.IEventCollector;
+import org.cabi.ofra.dataload.model.ICellProcessor;
 import org.cabi.ofra.dataload.model.IProcessingContext;
+import org.cabi.ofra.dataload.util.Utilities;
 
+import java.io.Serializable;
 import java.util.regex.Pattern;
 
 /**
  * (c) 2014, Eduardo Quirós-Campos
  */
-public class ValidateAndSet extends AbstractCellProcessor {
+public class ValidateAndSet extends AbstractProcessor implements ICellProcessor {
   private static final String KEY_REGEX = "regex";
   private static final String KEY_VARIABLENAME = "variableName";
+  private static final String KEY_TOSTRING = "toString";
 
   @Override
   public void processCell(IProcessingContext context, Cell cell, IEventCollector eventCollector) throws ProcessorException {
@@ -30,6 +34,10 @@ public class ValidateAndSet extends AbstractCellProcessor {
         logger.warn(msg);
       }
     }
-    context.set(variableName, cell.getStringCellValue());
+    Serializable val = Utilities.getCellValue(cell);
+    if (arguments.containsKey(KEY_TOSTRING)) {
+      val = String.valueOf(val);
+    }
+    context.set(variableName, val);
   }
 }

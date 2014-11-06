@@ -34,9 +34,17 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
     beforeFireCellProcessors(sheet, sheetConfiguration, eventCollector, context);
     fireCellProcessors(sheet, sheetConfiguration, eventCollector, context);
     afterFireCellProcessors(sheet, sheetConfiguration, eventCollector, context);
-    // next, fire the range processors
+    // then, fire range processors
+    beforeFireRangeProcessors(sheet, sheetConfiguration, eventCollector, context);
     fireRangeProcessors(sheet, sheetConfiguration, eventCollector, context);
+    afterFireRangeProcessors(sheet, sheetConfiguration, eventCollector, context);
+    // fire the main process on the sheet
+    process(sheet, sheetConfiguration, eventCollector, context);
   }
+
+  protected abstract void afterFireRangeProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException;
+
+  protected abstract void beforeFireRangeProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException;
 
   private void fireRangeProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException {
     for (SheetRangeConfiguration rangeConfiguration : sheetConfiguration.getRangeConfigurations()) {
@@ -71,9 +79,9 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
     }
   }
 
-  protected abstract void afterFireCellProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context);
+  protected abstract void afterFireCellProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException;
 
-  protected abstract void beforeFireCellProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context);
+  protected abstract void beforeFireCellProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException;
 
   private void fireCellProcessors(Sheet sheet, SheetConfiguration configuration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException {
     for (SheetCellProcessorConfiguration cellProcessorConfiguration : configuration.getCellProcessorConfigurations()) {
@@ -91,7 +99,7 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
         for (Map.Entry<String, String> e : cellProcessorConfiguration.getArguments().entrySet()) {
           cellProcessor.setArgument(e.getKey(), e.getValue());
         }
-        cellProcessor.processCell(context, row.getCell(ref.getCol()));
+        cellProcessor.processCell(context, row.getCell(ref.getCol()), eventCollector);
       }
       else {
         String msg = String.format("Warning: processor reference %s not found while processing sheet '%s'", cellProcessorConfiguration.getProcessorReference(), sheet.getSheetName());
@@ -109,5 +117,5 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
     return context.getRangeProcessors().get(processorReference);
   }
 
-  protected abstract void process(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context);
+  protected abstract void process(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException;
 }

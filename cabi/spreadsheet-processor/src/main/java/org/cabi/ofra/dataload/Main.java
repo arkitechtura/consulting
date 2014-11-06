@@ -15,7 +15,9 @@ public class Main {
     Options options = new Options();
     options.addOption(OptionBuilder.withArgName("file").hasArg().withDescription("use the given file as input for processing").isRequired().create("input"));
     options.addOption(OptionBuilder.withArgName("file").hasArg().withDescription("use the given file as configuration").create("config"));
+    options.addOption(OptionBuilder.withArgName("file").hasArg().withDescription("use the given file as database configuration properties").create("database"));
     options.addOption(OptionBuilder.withArgName("template").hasArg().withDescription("process input file using the given template").isRequired().create("template"));
+    options.addOption(OptionBuilder.withArgName("username").hasArg().withDescription("user the given user in all database operations").isRequired().create("user"));
     return options;
   }
 
@@ -53,7 +55,7 @@ public class Main {
       configReader = new BufferedReader(new InputStreamReader(Main.class.getClassLoader().getResourceAsStream("default-configuration.xml")));
     }
     SpreadsheetProcessor processor = new SpreadsheetProcessor(configReader, new BufferedInputStream(new FileInputStream(commandLine.getOptionValue("input"))),
-            commandLine.getOptionValue("template"));
+            commandLine.getOptionValue("template"), commandLine.getOptionValue("database"), commandLine.getOptionValue("user"));
     processor.process();
   }
 }
