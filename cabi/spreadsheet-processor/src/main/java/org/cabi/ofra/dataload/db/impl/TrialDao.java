@@ -44,7 +44,6 @@ public class TrialDao extends BaseDao implements ITrialDao {
               t.setLat(resultSet.getFloat(14));
               t.setLng(resultSet.getFloat(15));
               t.setUser(resultSet.getString(16));
-              t.setValid(true);
               return t;
             });
   }

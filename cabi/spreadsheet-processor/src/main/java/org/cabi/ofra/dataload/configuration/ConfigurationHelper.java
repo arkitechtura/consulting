@@ -54,7 +54,7 @@ public class ConfigurationHelper {
     digester.addCallParam("processor-configuration/templates/template/sheets/sheet/ranges/range/args/arg", 1, "value");
     digester.addObjectCreate("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding", SheetRangeColumnBindingConfiguration.class);
     digester.addSetProperties("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding");
-    digester.addCallMethod("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding/args", "addArgument", 2);
+    digester.addCallMethod("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding/args/arg", "addArgument", 2);
     digester.addCallParam("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding/args/arg", 0, "name");
     digester.addCallParam("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding/args/arg", 1, "value");
     digester.addSetTop("processor-configuration/templates/template/sheets/sheet/ranges/range/column-bindings/column-binding", "setParentRangeConfiguration");

@@ -22,6 +22,12 @@ public class ValidateAndSet extends AbstractProcessor implements ICellProcessor 
 
   @Override
   public void processCell(IProcessingContext context, Cell cell, IEventCollector eventCollector) throws ProcessorException {
+    if (cell == null) {
+      String msg = "Cell is null. Processing aborted on ValidateAndSet processor";
+      eventCollector.addEvent(EventBuilder.createBuilder().withMessage(msg).withType(Event.EVENT_TYPE.WARNING).build());
+      logger.warn(msg);
+      return;
+    }
     if (!arguments.containsKey(KEY_VARIABLENAME)) {
       throw new ProcessorException("ValidateAndSet processor requires 'variableName' argument");
     }

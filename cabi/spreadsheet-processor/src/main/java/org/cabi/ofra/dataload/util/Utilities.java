@@ -74,4 +74,37 @@ public class Utilities {
   public static Serializable getCellValue(Cell cell) {
     return evaluateCell(cell, cell.getCellType());
   }
+
+  public static String getStringCellValue(Cell cell) {
+    Serializable v = getCellValue(cell);
+    return v.getClass().equals(String.class) ? (String) v : String.valueOf(v);
+  }
+
+  public static double getDoubleCellValue(Cell cell) {
+    Serializable v = getCellValue(cell);
+    if (v.getClass().equals(Double.class) || v.getClass().equals(Float.class)) {
+      return (Double) v;
+    }
+    else if (v.getClass().equals(Boolean.class)) {
+      Boolean b = (Boolean) v;
+      return b ? 1.0 : 0.0;
+    }
+    else {
+      return Double.valueOf(v.toString());
+    }
+  }
+
+  public static int getIntegerCellValue(Cell cell) {
+    Serializable v = getCellValue(cell);
+    if (v.getClass().equals(Double.class) || v.getClass().equals(Float.class)) {
+      return ((Double) v).intValue();
+    }
+    else if (v.getClass().equals(Boolean.class)) {
+      Boolean b = (Boolean) v;
+      return b ? 1 : 0;
+    }
+    else {
+      return Integer.valueOf(v.toString());
+    }
+  }
 }

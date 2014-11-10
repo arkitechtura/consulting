@@ -2,6 +2,7 @@
 <processor-configuration>
     <cell-processors>
         <cell-processor name="valset" class="org.cabi.ofra.dataload.impl.ValidateAndSet"/>
+        <cell-processor name="checkPresent" class="org.cabi.ofra.dataload.impl.CheckPresent"/>
     </cell-processors>
     <range-processors>
         <range-processor name="trial-blocks-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlockRangeProcessor"/>
@@ -114,9 +115,28 @@
                     </cells>
                     <ranges>
                         <range start="A3" width="12" processorReference="trial-blocks-processor">
-                            <args>
-                                <arg name="table" value="table"/>
-                            </args>
+                            <column-bindings>
+                                <column-binding column="0" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Block number must be specified in 'Blocks' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="1" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Latitude Point #1 must be specified in 'Blocks' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="2" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Longitude Point #1 must be specified in 'Blocks' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="9" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Elevation value must be specified in 'Blocks' sheet"/>
+                                    </args>
+                                </column-binding>
+                            </column-bindings>
                         </range>
                     </ranges>
                 </sheet>

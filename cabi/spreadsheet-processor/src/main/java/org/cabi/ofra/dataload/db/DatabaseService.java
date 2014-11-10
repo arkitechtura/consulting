@@ -1,7 +1,11 @@
 package org.cabi.ofra.dataload.db;
 
 import org.apache.commons.dbcp.BasicDataSource;
+import org.cabi.ofra.dataload.db.impl.BlockDao;
+import org.cabi.ofra.dataload.db.impl.CountryDao;
+import org.cabi.ofra.dataload.db.impl.CropDao;
 import org.cabi.ofra.dataload.db.impl.TrialDao;
+import org.cabi.ofra.dataload.model.Block;
 import org.cabi.ofra.dataload.model.Trial;
 import org.cabi.ofra.dataload.util.Utilities;
 
@@ -14,6 +18,9 @@ import java.util.Properties;
 public class DatabaseService {
   private BasicDataSource dataSource;
   private ITrialDao trialDao;
+  private IBlockDao blockDao;
+  private ICropDao cropDao;
+  private ICountryDao countryDao;
 
   public DatabaseService() {
     dataSource = new BasicDataSource();
@@ -27,6 +34,12 @@ public class DatabaseService {
   private void initializeDaos() {
     trialDao = new TrialDao();
     trialDao.setDataSource(dataSource);
+    blockDao = new BlockDao();
+    blockDao.setDataSource(dataSource);
+    cropDao = new CropDao();
+    cropDao.setDataSource(dataSource);
+    countryDao = new CountryDao();
+    countryDao.setDataSource(dataSource);
   }
 
   private void initializeDataSource(String propertiesFile) throws IOException {
@@ -44,5 +57,22 @@ public class DatabaseService {
     else {
       trialDao.updateTrial(t);
     }
+  }
+
+  public void createOrUpdateBlock(Block b) {
+    if (!blockDao.existsBlock(b)) {
+      blockDao.createBlock(b);
+    }
+    else {
+      blockDao.updateBlock(b);
+    }
+  }
+
+  public boolean existsCrop(String cropId) {
+    return cropDao.existsCrop(cropId);
+  }
+
+  public boolean existsCountry(String countryCode) {
+    return countryDao.existsCountry(countryCode);
   }
 }

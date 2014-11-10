@@ -1,6 +1,8 @@
 package org.cabi.ofra.dataload.configuration;
 
 import org.apache.poi.ss.usermodel.Cell;
+import org.cabi.ofra.dataload.ProcessorException;
+import org.cabi.ofra.dataload.event.IEventCollector;
 import org.cabi.ofra.dataload.model.IProcessingContext;
 import org.cabi.ofra.dataload.model.IRangeProcessor;
 
@@ -36,7 +38,7 @@ public class DummyRangeProcessor implements IRangeProcessor {
   }
 
   @Override
-  public void processRow(IProcessingContext context, List<Cell> row) {
+  public void processRow(IProcessingContext context, List<Cell> row, IEventCollector eventCollector, SheetRangeConfiguration rangeConfiguration) throws ProcessorException {
 
   }
 }

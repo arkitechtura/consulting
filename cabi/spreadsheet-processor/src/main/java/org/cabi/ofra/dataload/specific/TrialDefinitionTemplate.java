@@ -4,15 +4,19 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.cabi.ofra.dataload.ProcessorException;
 import org.cabi.ofra.dataload.configuration.SheetConfiguration;
+import org.cabi.ofra.dataload.configuration.SheetRangeConfiguration;
 import org.cabi.ofra.dataload.db.DatabaseService;
 import org.cabi.ofra.dataload.event.Event;
 import org.cabi.ofra.dataload.event.EventBuilder;
 import org.cabi.ofra.dataload.event.IEventCollector;
 import org.cabi.ofra.dataload.impl.AbstractProcessor;
+import org.cabi.ofra.dataload.impl.AbstractRangeProcessor;
 import org.cabi.ofra.dataload.impl.BaseSheetProcessor;
+import org.cabi.ofra.dataload.model.Block;
 import org.cabi.ofra.dataload.model.IProcessingContext;
 import org.cabi.ofra.dataload.model.IRangeProcessor;
 import org.cabi.ofra.dataload.model.Trial;
+import org.cabi.ofra.dataload.util.Utilities;
 
 import java.util.List;
 
@@ -21,17 +25,19 @@ import java.util.List;
  */
 public class TrialDefinitionTemplate {
   public static class TrialSheetProcessor extends BaseSheetProcessor {
+    DatabaseService databaseService;
     @Override
     protected void process(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException{
+      databaseService = context.getDatabaseService();
       Trial trial = extractTrial(context);
-      DatabaseService databaseService = context.getDatabaseService();
       databaseService.createOrUpdateTrial(trial);
     }
 
-    private Trial extractTrial(IProcessingContext context) {
+    private Trial extractTrial(IProcessingContext context) throws ProcessorException {
       Trial t = new Trial();
       t.setTrialUniqueId(context.getv("trialUniqueId"));
       t.setCountry(context.getv("countryCode"));
+      validateCountry(t.getCountry());
       t.setRegionCode(context.getv("regionCode"));
       t.setVillageCode(context.getv("villageCode"));
       t.setDistrictCode(context.getv("districtCode"));
@@ -40,12 +46,27 @@ public class TrialDefinitionTemplate {
       t.setFieldAssistantName(context.getv("fieldAssistantName"));
       t.setFieldAssistantTelephone(context.getv("fieldAssistantTelephone"));
       t.setCropOne(context.getv("cropOne"));
+      validateCrop(t.getCropOne());
       t.setCropTwo(context.getv("cropTwo"));
+      validateCrop(t.getCropTwo());
       t.setLat(context.getv("latitude"));
       t.setLng(context.getv("longitude"));
       t.setUser(context.getUser());
-      t.setValid(true);
       return t;
+    }
+
+    private void validateCrop(String cropCode) throws ProcessorException {
+      if (cropCode != null) {
+        if (!databaseService.existsCrop(cropCode)) {
+          throw new ProcessorException(String.format("Crop code '%s' does not exist. Check the input template!", cropCode));
+        }
+      }
+    }
+
+    private void validateCountry(String country) throws ProcessorException {
+      if (!databaseService.existsCountry(country)) {
+        throw new ProcessorException(String.format("Country code '%s' does not exist. Check the input template!", country));
+      }
     }
   }
 
@@ -70,10 +91,28 @@ public class TrialDefinitionTemplate {
     }
   }
 
-  public static class BlockRangeProcessor extends AbstractProcessor implements IRangeProcessor {
+  public static class BlockRangeProcessor extends AbstractRangeProcessor {
     @Override
-    public void processRow(IProcessingContext context, List<Cell> row) {
+    protected void process(IProcessingContext context, List<Cell> row, IEventCollector eventCollector, SheetRangeConfiguration rangeConfiguration) throws ProcessorException {
+      Block block = buildBlockFromRow(row, context);
+      DatabaseService databaseService = context.getDatabaseService();
+      databaseService.createOrUpdateBlock(block);
+    }
 
+    private Block buildBlockFromRow(List<Cell> row, IProcessingContext context) {
+      Block block = new Block();
+      block.setTrialUniqueId(context.getv("blockTrialUID"));
+      block.setBlockNumber(Utilities.getIntegerCellValue(row.get(0)));
+      block.setLat(Utilities.getDoubleCellValue(row.get(1)));
+      block.setLng(Utilities.getDoubleCellValue(row.get(2)));
+      block.setLat2(Utilities.getDoubleCellValue(row.get(3)));
+      block.setLng2(Utilities.getDoubleCellValue(row.get(4)));
+      block.setLat3(Utilities.getDoubleCellValue(row.get(5)));
+      block.setLng3(Utilities.getDoubleCellValue(row.get(6)));
+      block.setLat4(Utilities.getDoubleCellValue(row.get(7)));
+      block.setLng4(Utilities.getDoubleCellValue(row.get(8)));
+      block.setElevation(Utilities.getDoubleCellValue(row.get(9)));
+      return block;
     }
   }
 }

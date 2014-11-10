@@ -57,7 +57,7 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
           logger.warn(msg);
           continue;
         }
-        for (int i = ref.getRow(); i < sheet.getLastRowNum(); i++) {
+        for (int i = ref.getRow(); i <= sheet.getLastRowNum(); i++) {
           Row row = sheet.getRow(i);
           Cell left = row.getCell(ref.getCol(), Row.RETURN_BLANK_AS_NULL);
           if (left != null) {
@@ -67,7 +67,14 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
             for (int j = ref.getCol(); j < lastColumn; j++) {
               r.add(row.getCell(j));
             }
-            rangeProcessor.processRow(context, r);
+            try {
+              rangeProcessor.processRow(context, r, eventCollector, rangeConfiguration);
+            }
+            catch (ProcessorException e) {
+              String msg = String.format("Error processing row #%d on RangeProcessor '%s'", i, rangeProcessor.getName());
+              logger.warn(msg, e);
+              eventCollector.addEvent(EventBuilder.createBuilder().withMessage(msg).withException(e).withType(Event.EVENT_TYPE.WARNING).build());
+            }
           }
         }
       }
@@ -99,7 +106,7 @@ public abstract class AbstractSheetProcessor implements ISheetProcessor {
         for (Map.Entry<String, String> e : cellProcessorConfiguration.getArguments().entrySet()) {
           cellProcessor.setArgument(e.getKey(), e.getValue());
         }
-        cellProcessor.processCell(context, row.getCell(ref.getCol()), eventCollector);
+        cellProcessor.processCell(context, row.getCell(ref.getCol(), Row.RETURN_BLANK_AS_NULL), eventCollector);
       }
       else {
         String msg = String.format("Warning: processor reference %s not found while processing sheet '%s'", cellProcessorConfiguration.getProcessorReference(), sheet.getSheetName());

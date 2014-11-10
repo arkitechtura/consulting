@@ -10,10 +10,10 @@ public class SheetRangeConfiguration {
   String start;
   int width;
   Map<String, String> arguments;
-  List<SheetRangeColumnBindingConfiguration> columnBindings;
+  Map<Integer, SheetRangeColumnBindingConfiguration> columnBindings;
 
   public SheetRangeConfiguration() {
-    columnBindings = new ArrayList<>();
+    columnBindings = new HashMap<>();
   }
 
   public String getProcessorReference() {
@@ -48,7 +48,7 @@ public class SheetRangeConfiguration {
   }
 
   public void addColumnBindingConfiguration(SheetRangeColumnBindingConfiguration bindingConfiguration) {
-    columnBindings.add(bindingConfiguration);
+    columnBindings.put(bindingConfiguration.getColumn(), bindingConfiguration);
   }
 
   public Map<String, String> getArguments() {
@@ -56,7 +56,7 @@ public class SheetRangeConfiguration {
     return arguments;
   }
 
-  public List<SheetRangeColumnBindingConfiguration> getColumnBindings() {
+  public Map<Integer, SheetRangeColumnBindingConfiguration> getColumnBindings() {
     return columnBindings;
   }
 }

@@ -12,12 +12,12 @@ import java.io.StringReader;
  */
 public class ConfigurationHelperTest {
   String testConfigXML =
-          "<processorReference-configuration>\n" +
+          "<processor-configuration>\n" +
           "    <cell-processors>\n" +
-          "        <cell-processorReference name=\"dummy-cell-processor\" class=\"org.cabi.ofra.dataload.configuration.DummyCellProcessor\"/>\n" +
+          "        <cell-processor name=\"dummy-cell-processor\" class=\"org.cabi.ofra.dataload.configuration.DummyCellProcessor\"/>\n" +
           "    </cell-processors>\n" +
           "    <range-processors>\n" +
-          "        <range-processorReference name=\"dummy-range-processor\" class=\"org.cabi.ofra.dataload.configuration.DummyRangeProcessor\"/>\n" +
+          "        <range-processor name=\"dummy-range-processor\" class=\"org.cabi.ofra.dataload.configuration.DummyRangeProcessor\"/>\n" +
           "    </range-processors>\n" +
           "    <templates>\n" +
           "        <template name=\"test-template\">\n" +
@@ -36,7 +36,7 @@ public class ConfigurationHelperTest {
           "                                <arg name=\"arg\" value=\"value\"/>\n" +
           "                            </args>\n" +
           "                            <column-bindings>\n" +
-          "                                <column-binding column=\"1\" processorReference=\"dummy-cell-processor\">\n" +
+          "                                <column-binding column=\"0\" processorReference=\"dummy-cell-processor\">\n" +
           "                                    <args>\n" +
           "                                        <arg name=\"arg\" value=\"value\"/>\n" +
           "                                    </args>\n" +
@@ -48,7 +48,7 @@ public class ConfigurationHelperTest {
           "            </sheets>\n" +
           "        </template>\n" +
           "    </templates>\n" +
-          "</processorReference-configuration>";
+          "</processor-configuration>";
   @Test
   public void testBasicConfiguration() throws IOException, SAXException {
     StringReader reader = new StringReader(testConfigXML);

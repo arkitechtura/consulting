@@ -1,5 +1,10 @@
 package org.cabi.ofra.dataload.model;
 
+import org.cabi.ofra.dataload.util.Pair;
+
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * (c) 2014, Eduardo Quirós-Campos
  */
@@ -23,7 +28,6 @@ public class Trial {
   private double lat;
   private double lng;
   private String user;
-  private boolean valid;
 
   public String getTrialUniqueId() {
     return trialUniqueId;
@@ -177,11 +181,54 @@ public class Trial {
     this.user = user;
   }
 
-  public boolean isValid() {
-    return valid;
+  public Pair<Boolean, String> validate() {
+    boolean ret = true;
+    String msg = null;
+    if (country == null) {
+      ret = false;
+      msg = String.format("Country can not be null on trial unique id '%s'", trialUniqueId);
+    }
+    else if (regionCode == null) {
+      ret = false;
+      msg = String.format("Region can not be null on trial unique id '%s'", trialUniqueId);
+    }
+    else if (districtCode == null) {
+      ret = false;
+      msg = String.format("District can not be null on trial unique id '%s'", trialUniqueId);
+    }
+    else if (villageCode == null) {
+      ret = false;
+      msg = String.format("Village can not be null on trial unique id '%s'", trialUniqueId);
+    }
+    else if (cropOne == null) {
+      ret = false;
+      msg = String.format("At least one crop must be specified for trial unique id '%s'", trialUniqueId);
+    }
+    return new Pair<>(ret, msg);
   }
 
-  public void setValid(boolean valid) {
-    this.valid = valid;
+  private static Pattern trialPattern = Pattern.compile("([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\d]{4})([\\w]+)");
+
+  public static Trial createFromUniqueId(String trialUniqueId) {
+    Matcher m = trialPattern.matcher(trialUniqueId);
+    if (m.matches()) {
+      Trial t = new Trial();
+      t.setTrialUniqueId(trialUniqueId);
+      t.setCountry(m.group(1));
+      t.setRegionCode(m.group(2));
+      t.setDistrictCode(m.group(3));
+      t.setVillageCode(m.group(4));
+      String crops = m.group(5);
+      for (int i = 0; i < crops.length() / 2; i++) {
+        if (i == 0) {
+          t.setCropOne(crops.substring(0, 2));
+        }
+        else if (i == 1) {
+          t.setCropTwo(crops.substring(2, 4));
+        }
+      }
+      t.setYear(Integer.valueOf(m.group(6)));
+    }
+    return null;
   }
 }
