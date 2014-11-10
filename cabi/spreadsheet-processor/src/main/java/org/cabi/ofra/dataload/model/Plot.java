@@ -25,6 +25,10 @@ public class Plot {
     return trialUniqueId;
   }
 
+  public String getPlotUniqueId() {
+    return String.format("%s_B%d_%d", trialUniqueId, blockNumber, plotId);
+  }
+
   public void setTrialUniqueId(String trialUniqueId) {
     this.trialUniqueId = trialUniqueId;
   }
