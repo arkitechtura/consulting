@@ -25,6 +25,9 @@
         <module name="spreadsheet-processor" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="spreadsheet-processor" target="1.8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
 
