@@ -71,16 +71,26 @@ public class Utilities {
     }
   }
 
+  public static boolean isBlank(Cell cell) {
+    return (cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK);
+  }
+
   public static Serializable getCellValue(Cell cell) {
     return evaluateCell(cell, cell.getCellType());
   }
 
   public static String getStringCellValue(Cell cell) {
+    if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+      return "";
+    }
     Serializable v = getCellValue(cell);
     return v.getClass().equals(String.class) ? (String) v : String.valueOf(v);
   }
 
   public static double getDoubleCellValue(Cell cell) {
+    if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+      return Double.MIN_VALUE;
+    }
     Serializable v = getCellValue(cell);
     if (v.getClass().equals(Double.class) || v.getClass().equals(Float.class)) {
       return (Double) v;
@@ -95,6 +105,9 @@ public class Utilities {
   }
 
   public static int getIntegerCellValue(Cell cell) {
+    if (cell.getCellType() == Cell.CELL_TYPE_BLANK) {
+      return Integer.MIN_VALUE;
+    }
     Serializable v = getCellValue(cell);
     if (v.getClass().equals(Double.class) || v.getClass().equals(Float.class)) {
       return ((Double) v).intValue();

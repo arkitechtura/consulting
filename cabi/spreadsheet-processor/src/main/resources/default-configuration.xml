@@ -6,6 +6,7 @@
     </cell-processors>
     <range-processors>
         <range-processor name="trial-blocks-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlockRangeProcessor"/>
+        <range-processor name="trial-plots-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$PlotRangeProcessor"/>
     </range-processors>
     <templates>
         <template name="trial-definition">
@@ -109,7 +110,7 @@
                     <cells>
                         <cell processorReference="valset" location="B1">
                             <args>
-                                <arg name="variableName" value="blockTrialUID"/>
+                                <arg name="variableName" value="blocksTrialUID"/>
                             </args>
                         </cell>
                     </cells>
@@ -134,6 +135,56 @@
                                 <column-binding column="9" processorReference="checkPresent">
                                     <args>
                                         <arg name="message" value="Elevation value must be specified in 'Blocks' sheet"/>
+                                    </args>
+                                </column-binding>
+                            </column-bindings>
+                        </range>
+                    </ranges>
+                </sheet>
+                <sheet name="Plots" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$PlotsSheetProcessor">
+                    <cells>
+                        <cell processorReference="valset" location="B1">
+                            <args>
+                                <arg name="variableName" value="plotsTrialUID"/>
+                            </args>
+                        </cell>
+                    </cells>
+                    <ranges>
+                        <range start="A3" width="15" processorReference="trial-plots-processor">
+                            <column-bindings>
+                                <column-binding column="0" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Block number must be specified in 'Plots' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="1" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Plot number must be specified in 'Plots' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="2" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Plot area must be specified in 'Plots' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="3" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Nitrogen value for plot must be specified in 'Plots' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="4" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Phosphorus value for plot must be specified in 'Plots' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="5" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Potassium value for plot must be specified in 'Plots' sheet"/>
+                                    </args>
+                                </column-binding>
+                                <column-binding column="11" processorReference="checkPresent">
+                                    <args>
+                                        <arg name="message" value="Crop One for plot must be specified in 'Plots' sheet"/>
                                     </args>
                                 </column-binding>
                             </column-bindings>

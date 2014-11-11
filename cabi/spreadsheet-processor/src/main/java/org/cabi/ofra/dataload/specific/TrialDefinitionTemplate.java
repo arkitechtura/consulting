@@ -9,15 +9,12 @@ import org.cabi.ofra.dataload.db.DatabaseService;
 import org.cabi.ofra.dataload.event.Event;
 import org.cabi.ofra.dataload.event.EventBuilder;
 import org.cabi.ofra.dataload.event.IEventCollector;
-import org.cabi.ofra.dataload.impl.AbstractProcessor;
 import org.cabi.ofra.dataload.impl.AbstractRangeProcessor;
 import org.cabi.ofra.dataload.impl.BaseSheetProcessor;
-import org.cabi.ofra.dataload.model.Block;
-import org.cabi.ofra.dataload.model.IProcessingContext;
-import org.cabi.ofra.dataload.model.IRangeProcessor;
-import org.cabi.ofra.dataload.model.Trial;
+import org.cabi.ofra.dataload.model.*;
 import org.cabi.ofra.dataload.util.Utilities;
 
+import javax.rmi.CORBA.Util;
 import java.util.List;
 
 /**
@@ -74,7 +71,7 @@ public class TrialDefinitionTemplate {
     @Override
     protected void beforeFireRangeProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException {
       String mainTrialId = context.getv("trialUniqueId");
-      String blockTrialUID = context.getv("blockTrialUID");
+      String blockTrialUID = context.getv("blocksTrialUID");
       if (blockTrialUID == null) {
         throw new ProcessorException(String.format("Error: Trial UID is not present in %s sheet", sheet.getSheetName()));
       }
@@ -101,7 +98,7 @@ public class TrialDefinitionTemplate {
 
     private Block buildBlockFromRow(List<Cell> row, IProcessingContext context) {
       Block block = new Block();
-      block.setTrialUniqueId(context.getv("blockTrialUID"));
+      block.setTrialUniqueId(context.getv("blocksTrialUID"));
       block.setBlockNumber(Utilities.getIntegerCellValue(row.get(0)));
       block.setLat(Utilities.getDoubleCellValue(row.get(1)));
       block.setLng(Utilities.getDoubleCellValue(row.get(2)));
@@ -113,6 +110,56 @@ public class TrialDefinitionTemplate {
       block.setLng4(Utilities.getDoubleCellValue(row.get(8)));
       block.setElevation(Utilities.getDoubleCellValue(row.get(9)));
       return block;
+    }
+  }
+
+  public static class PlotsSheetProcessor extends BaseSheetProcessor {
+    @Override
+    protected void beforeFireRangeProcessors(Sheet sheet, SheetConfiguration sheetConfiguration, IEventCollector eventCollector, IProcessingContext context) throws ProcessorException {
+      String mainTrialId = context.getv("trialUniqueId");
+      String blockTrialUID = context.getv("plotsTrialUID");
+      if (blockTrialUID == null) {
+        throw new ProcessorException(String.format("Error: Trial UID is not present in %s sheet", sheet.getSheetName()));
+      }
+      if (mainTrialId == null) {
+        String msg = "Warning: Trial Unique ID was not captured in the main 'Trial' sheet";
+        logger.warn(msg);
+        eventCollector.addEvent(EventBuilder.createBuilder().withMessage(msg).withType(Event.EVENT_TYPE.WARNING).build());
+      }
+      else if (!mainTrialId.equals(blockTrialUID)) {
+        String msg = String.format("Warning: UID captured in Trial sheet (%s) is different from the one present in the Plots sheet (%s)", mainTrialId, blockTrialUID);
+        logger.warn(msg);
+        eventCollector.addEvent(EventBuilder.createBuilder().withMessage(msg).withType(Event.EVENT_TYPE.WARNING).build());
+      }
+    }
+  }
+  public static class PlotRangeProcessor extends AbstractRangeProcessor {
+    @Override
+    protected void process(IProcessingContext context, List<Cell> row, IEventCollector eventCollector, SheetRangeConfiguration rangeConfiguration) throws ProcessorException {
+      Plot plot = buildPlotFromRow(row, context);
+      DatabaseService databaseService = context.getDatabaseService();
+      databaseService.createOrUpdatePlot(plot);
+    }
+
+    private Plot buildPlotFromRow(List<Cell> row, IProcessingContext context) {
+      Plot plot = new Plot();
+      plot.setTrialUniqueId(context.getv("plotsTrialUID"));
+      plot.setBlockNumber(Utilities.getIntegerCellValue(row.get(0)));
+      plot.setPlotId(Utilities.getIntegerCellValue(row.get(1)));
+      plot.setArea(Utilities.getDoubleCellValue(row.get(2)));
+      plot.setNitrogen(Utilities.getDoubleCellValue(row.get(3)));
+      plot.setPhosphorus(Utilities.getDoubleCellValue(row.get(4)));
+      plot.setPotassium(Utilities.getDoubleCellValue(row.get(5)));
+      plot.setSulphur(Utilities.getDoubleCellValue(row.get(6)));
+      plot.setZinc(Utilities.getDoubleCellValue(row.get(7)));
+      plot.setMagnesium(Utilities.getDoubleCellValue(row.get(8)));
+      plot.setBoron(Utilities.getDoubleCellValue(row.get(9)));
+      plot.setManure(Utilities.getDoubleCellValue(row.get(10)));
+      plot.setCropOne(Utilities.getStringCellValue(row.get(11)));
+      plot.setCropTwo(Utilities.getStringCellValue(row.get(12)));
+      plot.setCropThree(Utilities.getStringCellValue(row.get(13)));
+      plot.setObservations(Utilities.getStringCellValue(row.get(14)));
+      return plot;
     }
   }
 }

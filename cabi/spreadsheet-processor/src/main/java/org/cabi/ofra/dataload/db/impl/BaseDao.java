@@ -15,4 +15,16 @@ public class BaseDao implements IDao {
   public void setDataSource(DataSource dataSource) {
     jdbcTemplate = new JdbcTemplate(dataSource);
   }
+
+  protected Object nvl(double d) {
+    return (d == Double.MIN_VALUE) ? null : d;
+  }
+
+  protected Object nvl(int i) {
+    return (i == Integer.MIN_VALUE) ? null : i;
+  }
+
+  protected Object nvl(String s) {
+    return "".equals(s) ? null : s;
+  }
 }

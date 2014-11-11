@@ -1,11 +1,9 @@
 package org.cabi.ofra.dataload.db;
 
 import org.apache.commons.dbcp.BasicDataSource;
-import org.cabi.ofra.dataload.db.impl.BlockDao;
-import org.cabi.ofra.dataload.db.impl.CountryDao;
-import org.cabi.ofra.dataload.db.impl.CropDao;
-import org.cabi.ofra.dataload.db.impl.TrialDao;
+import org.cabi.ofra.dataload.db.impl.*;
 import org.cabi.ofra.dataload.model.Block;
+import org.cabi.ofra.dataload.model.Plot;
 import org.cabi.ofra.dataload.model.Trial;
 import org.cabi.ofra.dataload.util.Utilities;
 
@@ -21,6 +19,7 @@ public class DatabaseService {
   private IBlockDao blockDao;
   private ICropDao cropDao;
   private ICountryDao countryDao;
+  private IPlotDao plotDao;
 
   public DatabaseService() {
     dataSource = new BasicDataSource();
@@ -40,6 +39,8 @@ public class DatabaseService {
     cropDao.setDataSource(dataSource);
     countryDao = new CountryDao();
     countryDao.setDataSource(dataSource);
+    plotDao = new PlotDao();
+    plotDao.setDataSource(dataSource);
   }
 
   private void initializeDataSource(String propertiesFile) throws IOException {
@@ -74,5 +75,14 @@ public class DatabaseService {
 
   public boolean existsCountry(String countryCode) {
     return countryDao.existsCountry(countryCode);
+  }
+
+  public void createOrUpdatePlot(Plot p) {
+    if (!plotDao.existsPlot(p)) {
+      plotDao.createPlot(p);
+    }
+    else {
+      plotDao.updatePlot(p);
+    }
   }
 }
