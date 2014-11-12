@@ -21,15 +21,6 @@
                 <include>default-configuration.xml</include>
             </includes>
         </fileSet>
-<!--
-        <fileSet>
-            <directory>${project.build.directory}</directory>
-            <outputDirectory>/lib</outputDirectory>
-            <includes>
-                <include>*.jar</include>
-            </includes>
-        </fileSet>
--->
     </fileSets>
     <dependencySets>
         <dependencySet>

@@ -207,7 +207,15 @@ public class Trial {
     return new Pair<>(ret, msg);
   }
 
-  private static Pattern trialPattern = Pattern.compile("([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\d]{4})([\\w]+)");
+  private static Pattern trialPattern = Pattern.compile("([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\d]{4})([\\w]{2})[_]?[\\w]*");
+
+  public String extractTrialUniqueId(String uid) {
+    Matcher m = trialPattern.matcher(uid);
+    if (m.matches()) {
+      return String.format("%s_%s_%s_%s_%s_%s%s", m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
+    }
+    return null;
+  }
 
   public static Trial createFromUniqueId(String trialUniqueId) {
     Matcher m = trialPattern.matcher(trialUniqueId);
@@ -228,6 +236,7 @@ public class Trial {
         }
       }
       t.setYear(Integer.valueOf(m.group(6)));
+      t.setSeason(m.group(7));
     }
     return null;
   }
