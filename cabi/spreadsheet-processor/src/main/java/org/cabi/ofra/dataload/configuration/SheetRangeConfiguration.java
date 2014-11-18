@@ -11,6 +11,7 @@ public class SheetRangeConfiguration {
   int width;
   Map<String, String> arguments;
   Map<Integer, SheetRangeColumnBindingConfiguration> columnBindings;
+  boolean requireAll = false;
 
   public SheetRangeConfiguration() {
     columnBindings = new HashMap<>();
@@ -58,5 +59,13 @@ public class SheetRangeConfiguration {
 
   public Map<Integer, SheetRangeColumnBindingConfiguration> getColumnBindings() {
     return columnBindings;
+  }
+
+  public boolean isRequireAll() {
+    return requireAll;
+  }
+
+  public void setRequireAll(boolean requireAll) {
+    this.requireAll = requireAll;
   }
 }

@@ -206,38 +206,4 @@ public class Trial {
     }
     return new Pair<>(ret, msg);
   }
-
-  private static Pattern trialPattern = Pattern.compile("([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\w]+)_([\\d]{4})([\\w]{2})[_]?[\\w]*");
-
-  public String extractTrialUniqueId(String uid) {
-    Matcher m = trialPattern.matcher(uid);
-    if (m.matches()) {
-      return String.format("%s_%s_%s_%s_%s_%s%s", m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7));
-    }
-    return null;
-  }
-
-  public static Trial createFromUniqueId(String trialUniqueId) {
-    Matcher m = trialPattern.matcher(trialUniqueId);
-    if (m.matches()) {
-      Trial t = new Trial();
-      t.setTrialUniqueId(trialUniqueId);
-      t.setCountry(m.group(1));
-      t.setRegionCode(m.group(2));
-      t.setDistrictCode(m.group(3));
-      t.setVillageCode(m.group(4));
-      String crops = m.group(5);
-      for (int i = 0; i < crops.length() / 2; i++) {
-        if (i == 0) {
-          t.setCropOne(crops.substring(0, 2));
-        }
-        else if (i == 1) {
-          t.setCropTwo(crops.substring(2, 4));
-        }
-      }
-      t.setYear(Integer.valueOf(m.group(6)));
-      t.setSeason(m.group(7));
-    }
-    return null;
-  }
 }

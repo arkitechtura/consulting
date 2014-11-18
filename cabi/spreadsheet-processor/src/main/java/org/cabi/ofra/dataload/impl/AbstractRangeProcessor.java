@@ -8,7 +8,9 @@ import org.cabi.ofra.dataload.event.IEventCollector;
 import org.cabi.ofra.dataload.model.ICellProcessor;
 import org.cabi.ofra.dataload.model.IProcessingContext;
 import org.cabi.ofra.dataload.model.IRangeProcessor;
+import org.cabi.ofra.dataload.util.Utilities;
 
+import javax.annotation.processing.Processor;
 import java.util.List;
 import java.util.Map;
 
@@ -21,6 +23,9 @@ public abstract class AbstractRangeProcessor extends AbstractProcessor implement
     int i = 0;
     Map<Integer, SheetRangeColumnBindingConfiguration> bindings = rangeConfiguration.getColumnBindings();
     for (Cell cell : row) {
+      if (Utilities.isBlank(cell) && rangeConfiguration.isRequireAll()) {
+        throw new ProcessorException(String.format("Cell at position %d is null in range ", i));
+      }
       SheetRangeColumnBindingConfiguration binding = bindings.get(i);
       if (binding != null) {
         processBinding(context, binding, cell, i, eventCollector);

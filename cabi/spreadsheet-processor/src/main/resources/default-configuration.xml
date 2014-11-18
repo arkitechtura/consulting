@@ -1,197 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <processor-configuration>
-    <cell-processors>
-        <cell-processor name="valset" class="org.cabi.ofra.dataload.impl.ValidateAndSet"/>
-        <cell-processor name="checkPresent" class="org.cabi.ofra.dataload.impl.CheckPresent"/>
-    </cell-processors>
-    <range-processors>
-        <range-processor name="trial-blocks-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlockRangeProcessor"/>
-        <range-processor name="trial-plots-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$PlotRangeProcessor"/>
-    </range-processors>
-    <templates>
-        <template name="trial-definition">
-            <sheets>
-                <sheet name="Trial" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$TrialSheetProcessor">
-                    <cells>
-                        <cell processorReference="valset" location="B23">
-                            <args>
-                                <arg name="variableName" value="trialUniqueId"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B2">
-                            <args>
-                                <arg name="variableName" value="countryCode"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B3">
-                            <args>
-                                <arg name="variableName" value="regionName"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B4">
-                            <args>
-                                <arg name="variableName" value="regionCode"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B5">
-                            <args>
-                                <arg name="variableName" value="districtName"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B6">
-                            <args>
-                                <arg name="variableName" value="districtCode"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B7">
-                            <args>
-                                <arg name="variableName" value="villageName"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B8">
-                            <args>
-                                <arg name="variableName" value="villageCode"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B9">
-                            <args>
-                                <arg name="variableName" value="cropOne"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B10">
-                            <args>
-                                <arg name="variableName" value="cropTwo"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B12">
-                            <args>
-                                <arg name="variableName" value="year"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B13">
-                            <args>
-                                <arg name="variableName" value="season"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B15">
-                            <args>
-                                <arg name="variableName" value="farmerOrCentre"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B16">
-                            <args>
-                                <arg name="variableName" value="leadResearcher"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B17">
-                            <args>
-                                <arg name="variableName" value="fieldAssistantName"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B18">
-                            <args>
-                                <arg name="variableName" value="fieldAssistantTelephone"/>
-                                <arg name="toString" value="true"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B19">
-                            <args>
-                                <arg name="variableName" value="latitude"/>
-                            </args>
-                        </cell>
-                        <cell processorReference="valset" location="B20">
-                            <args>
-                                <arg name="variableName" value="longitude"/>
-                            </args>
-                        </cell>
-                    </cells>
-                </sheet>
-                <sheet name="Blocks" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlocksSheetProcessor">
-                    <cells>
-                        <cell processorReference="valset" location="B1">
-                            <args>
-                                <arg name="variableName" value="blocksTrialUID"/>
-                            </args>
-                        </cell>
-                    </cells>
-                    <ranges>
-                        <range start="A3" width="12" processorReference="trial-blocks-processor">
-                            <column-bindings>
-                                <column-binding column="0" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Block number must be specified in 'Blocks' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="1" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Latitude Point #1 must be specified in 'Blocks' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="2" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Longitude Point #1 must be specified in 'Blocks' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="9" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Elevation value must be specified in 'Blocks' sheet"/>
-                                    </args>
-                                </column-binding>
-                            </column-bindings>
-                        </range>
-                    </ranges>
-                </sheet>
-                <sheet name="Plots" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$PlotsSheetProcessor">
-                    <cells>
-                        <cell processorReference="valset" location="B1">
-                            <args>
-                                <arg name="variableName" value="plotsTrialUID"/>
-                            </args>
-                        </cell>
-                    </cells>
-                    <ranges>
-                        <range start="A3" width="15" processorReference="trial-plots-processor">
-                            <column-bindings>
-                                <column-binding column="0" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Block number must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="1" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Plot number must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="2" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Plot area must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="3" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Nitrogen value for plot must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="4" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Phosphorus value for plot must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="5" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Potassium value for plot must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                                <column-binding column="11" processorReference="checkPresent">
-                                    <args>
-                                        <arg name="message" value="Crop One for plot must be specified in 'Plots' sheet"/>
-                                    </args>
-                                </column-binding>
-                            </column-bindings>
-                        </range>
-                    </ranges>
-                </sheet>
-            </sheets>
-        </template>
-    </templates>
+  <cell-processors>
+    <cell-processor name="valset" class="org.cabi.ofra.dataload.impl.ValidateAndSet"/>
+    <cell-processor name="checkPresent" class="org.cabi.ofra.dataload.impl.CheckPresent"/>
+    <cell-processor name="trialValidator" class="org.cabi.ofra.dataload.impl.TrialValidator"/>
+  </cell-processors>
+  <range-processors>
+    <range-processor name="trial-blocks-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlockRangeProcessor"/>
+    <range-processor name="trial-plots-processor" class="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$PlotRangeProcessor"/>
+    <range-processor name="trial-soil-sample-processor" class="org.cabi.ofra.dataload.specific.TrialSoilTemplates$SoilSampleRangeProcessor"/>
+    <range-processor name="trial-soil-result-processor" class="org.cabi.ofra.dataload.specific.TrialSoilTemplates$SoilResultRangeProcessor"/>
+  </range-processors>
+  <templates>
+    <template name="trial-definition">
+      <sheets>
+        <sheet name="Trial" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$TrialSheetProcessor">
+          <cells>
+            <cell processorReference="valset" location="B23">
+              <args>
+                <arg name="variableName" value="trialUniqueId"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B2">
+              <args>
+                <arg name="variableName" value="countryCode"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B3">
+              <args>
+                <arg name="variableName" value="regionName"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B4">
+              <args>
+                <arg name="variableName" value="regionCode"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B5">
+              <args>
+                <arg name="variableName" value="districtName"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B6">
+              <args>
+                <arg name="variableName" value="districtCode"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B7">
+              <args>
+                <arg name="variableName" value="villageName"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B8">
+              <args>
+                <arg name="variableName" value="villageCode"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B9">
+              <args>
+                <arg name="variableName" value="cropOne"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B10">
+              <args>
+                <arg name="variableName" value="cropTwo"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B12">
+              <args>
+                <arg name="variableName" value="year"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B13">
+              <args>
+                <arg name="variableName" value="season"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B15">
+              <args>
+                <arg name="variableName" value="farmerOrCentre"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B16">
+              <args>
+                <arg name="variableName" value="leadResearcher"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B17">
+              <args>
+                <arg name="variableName" value="fieldAssistantName"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B18">
+              <args>
+                <arg name="variableName" value="fieldAssistantTelephone"/>
+                <arg name="toString" value="true"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B19">
+              <args>
+                <arg name="variableName" value="latitude"/>
+              </args>
+            </cell>
+            <cell processorReference="valset" location="B20">
+              <args>
+                <arg name="variableName" value="longitude"/>
+              </args>
+            </cell>
+          </cells>
+        </sheet>
+        <sheet name="Blocks" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$BlocksSheetProcessor">
+          <cells>
+            <cell processorReference="valset" location="B1">
+              <args>
+                <arg name="variableName" value="blocksTrialUID"/>
+              </args>
+            </cell>
+          </cells>
+          <ranges>
+            <range start="A3" width="12" processorReference="trial-blocks-processor">
+              <column-bindings>
+                <column-binding column="0" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Block number must be specified in 'Blocks' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="1" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Latitude Point #1 must be specified in 'Blocks' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="2" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Longitude Point #1 must be specified in 'Blocks' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="9" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Elevation value must be specified in 'Blocks' sheet"/>
+                  </args>
+                </column-binding>
+              </column-bindings>
+            </range>
+          </ranges>
+        </sheet>
+        <sheet name="Plots" required="true" implementationClass="org.cabi.ofra.dataload.specific.TrialDefinitionTemplate$PlotsSheetProcessor">
+          <cells>
+            <cell processorReference="valset" location="B1">
+              <args>
+                <arg name="variableName" value="plotsTrialUID"/>
+              </args>
+            </cell>
+          </cells>
+          <ranges>
+            <range start="A3" width="15" processorReference="trial-plots-processor">
+              <column-bindings>
+                <column-binding column="0" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Block number must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="1" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Plot number must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="2" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Plot area must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="3" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Nitrogen value for plot must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="4" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Phosphorus value for plot must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="5" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Potassium value for plot must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+                <column-binding column="11" processorReference="checkPresent">
+                  <args>
+                    <arg name="message" value="Crop One for plot must be specified in 'Plots' sheet"/>
+                  </args>
+                </column-binding>
+              </column-bindings>
+            </range>
+          </ranges>
+        </sheet>
+      </sheets>
+    </template>
+    <template name="trial-soil-sample">
+      <sheets>
+        <sheet name="Trial Soil Sample" required="true" implementationClass="org.cabi.ofra.dataload.impl.BaseSheetProcessor">
+          <ranges>
+            <range start="A2" width="5" processorReference="trial-soil-sample-processor" requireAll="true">
+              <column-bindings>
+                <column-binding column="0" processorReference="trialValidator">
+                  <args>
+                    <arg name="message" value="Cell value '%s' references trial unique identifier '%s', which does not exist"/>
+                  </args>
+                </column-binding>
+              </column-bindings>
+            </range>
+          </ranges>
+        </sheet>
+      </sheets>
+    </template>
+    <template name="trial-soil-result">
+      <sheets>
+        <sheet name="Trial Soil Result" required="true" implementationClass="org.cabi.ofra.dataload.impl.BaseSheetProcessor">
+          <ranges>
+            <range start="A2" width="18" processorReference="trial-soil-result-processor" requireAll="true">
+              <column-bindings>
+                <column-binding column="0" processorReference="trialValidator">
+                  <args>
+                    <arg name="message" value="Cell value '%s' references trial unique identifier '%s', which does not exist"/>
+                  </args>
+                </column-binding>
+              </column-bindings>
+            </range>
+          </ranges>
+        </sheet>
+      </sheets>
+    </template>
+
+  </templates>
 </processor-configuration>

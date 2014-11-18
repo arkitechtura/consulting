@@ -4,6 +4,7 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.cabi.ofra.dataload.db.impl.*;
 import org.cabi.ofra.dataload.model.Block;
 import org.cabi.ofra.dataload.model.Plot;
+import org.cabi.ofra.dataload.model.SoilSample;
 import org.cabi.ofra.dataload.model.Trial;
 import org.cabi.ofra.dataload.util.Utilities;
 
@@ -20,6 +21,7 @@ public class DatabaseService {
   private ICropDao cropDao;
   private ICountryDao countryDao;
   private IPlotDao plotDao;
+  private ISoilSampleDao soilSampleDao;
 
   public DatabaseService() {
     dataSource = new BasicDataSource();
@@ -41,6 +43,8 @@ public class DatabaseService {
     countryDao.setDataSource(dataSource);
     plotDao = new PlotDao();
     plotDao.setDataSource(dataSource);
+    soilSampleDao = new SoilSampleDao();
+    soilSampleDao.setDataSource(dataSource);
   }
 
   private void initializeDataSource(String propertiesFile) throws IOException {
@@ -49,6 +53,10 @@ public class DatabaseService {
     dataSource.setUrl(props.getProperty("database.url"));
     dataSource.setUsername(props.getProperty("database.username"));
     dataSource.setPassword(props.getProperty("database.password"));
+  }
+
+  public boolean existsTrialByUniqueId(String uid) {
+    return trialDao.existsTrial(uid);
   }
 
   public void createOrUpdateTrial(Trial t) {
@@ -83,6 +91,27 @@ public class DatabaseService {
     }
     else {
       plotDao.updatePlot(p);
+    }
+  }
+
+  public boolean existsSoilSample(String trialUid, int trialId) {
+    return soilSampleDao.existsSoilSampleById(trialUid, trialId);
+  }
+
+  public SoilSample findSoilSampleById(String trialUid, int trialId) {
+    return soilSampleDao.findSoilSampleById(trialUid, trialId);
+  }
+
+  public void updateSoilSample(SoilSample soilSample) {
+    soilSampleDao.updateSoilSample(soilSample);
+  }
+
+  public void createOrUpdateSoilSample(SoilSample soilSample) {
+    if (soilSampleDao.existsSoilSample(soilSample)) {
+      soilSampleDao.updateSoilSample(soilSample);
+    }
+    else {
+      soilSampleDao.createSoilSample(soilSample);
     }
   }
 }

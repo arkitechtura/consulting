@@ -1,15 +1,21 @@
 package org.cabi.ofra.dataload.util;
 
-import org.apache.commons.logging.LogFactory;
 import org.apache.poi.hssf.util.CellReference;
 import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
+import org.cabi.ofra.dataload.ProcessorException;
+import org.cabi.ofra.dataload.db.DatabaseService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * (c) 2014, Eduardo Quirós-Campos
@@ -71,6 +77,10 @@ public class Utilities {
     }
   }
 
+  private static int getCellType(Cell cell) {
+    return cell.getCellType() == Cell.CELL_TYPE_FORMULA ? cell.getCachedFormulaResultType() : cell.getCellType();
+  }
+
   public static boolean isBlank(Cell cell) {
     return (cell == null || cell.getCellType() == Cell.CELL_TYPE_BLANK);
   }
@@ -85,6 +95,24 @@ public class Utilities {
     }
     Serializable v = getCellValue(cell);
     return v.getClass().equals(String.class) ? (String) v : String.valueOf(v);
+  }
+
+  public static Date getDateCellValue(Cell cell) throws ParseException {
+    switch (getCellType(cell)) {
+      case Cell.CELL_TYPE_BLANK:
+        return new Date(0);
+      case Cell.CELL_TYPE_NUMERIC:
+        return cell.getDateCellValue();
+      case Cell.CELL_TYPE_STRING:
+        return parseDate(cell.getStringCellValue());
+      default:
+        return null;
+    }
+  }
+
+  private static SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+  private static Date parseDate(String dateString) throws ParseException {
+    return formatter.parse(dateString);
   }
 
   public static double getDoubleCellValue(Cell cell) {
@@ -120,4 +148,32 @@ public class Utilities {
       return Integer.valueOf(v.toString());
     }
   }
+  private static Pattern basePattern = Pattern.compile("([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([a-zA-Z0-9]+)_([\\d]{4})([a-zA-Z0-9]{2})[_]?([a-zA-Z0-9]*)");
+
+  public static Matcher matchUid(String uid) {
+    Matcher m = basePattern.matcher(uid);
+    if (m.matches()) return m;
+    return null;
+  }
+
+  public static Pair<String, String> matchTrialBase(String uid) {
+    Matcher m = matchUid(uid);
+    if (m != null) {
+      return new Pair<>(String.format("%s_%s_%s_%s_%s_%s%s", m.group(1), m.group(2), m.group(3), m.group(4), m.group(5), m.group(6), m.group(7)), m.group(8));
+    }
+    return null;
+  }
+
+  public static String extractTrialUniqueId(String uid) {
+    Pair<String, String> p = matchTrialBase(uid);
+    if (p == null) return null;
+    return p.car();
+  }
+
+  public static void validateTrial(DatabaseService databaseService,  String trialUid) throws ProcessorException {
+    if (!databaseService.existsTrialByUniqueId(trialUid)) {
+      throw new ProcessorException(String.format("Referenced trial '%s' does not exist in database", trialUid));
+    }
+  }
+
 }
